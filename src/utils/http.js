@@ -45,7 +45,7 @@ service.interceptors.response.use(response => {
     // }
     // return res
 }, err => {
-    console.log("33333333333333333")
+    console.log("服务器连接失败")
 
     loading.close()
     return showMessage(err.message)
