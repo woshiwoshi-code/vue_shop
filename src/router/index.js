@@ -10,17 +10,21 @@ const routes = [{
   {
     path: '/login',
     name: 'login',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import('../components/login.vue')
+    component: () => import('../components/login.vue'),
   }, {
     path: '/home',
     name: 'home',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import('../components/home.vue')
+    redirect: "welcome",
+    component: () => import('../components/home.vue'),
+    children: [{
+      path: '/welcome',
+      name: 'welcome',
+      component: () => import('../components/welcome.vue')
+    }, {
+      path: '/users',
+      name: 'users',
+      component: () => import('../components/user/Users.vue')
+    }]
   }
 ]
 

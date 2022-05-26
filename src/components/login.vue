@@ -94,7 +94,6 @@
                         message: res.meta.msg,
                         type: "success",
                     });
-                    console.log(res);
                     window.sessionStorage.setItem("token", res.data.token)
                     router.push("/home")
                 } else {}
