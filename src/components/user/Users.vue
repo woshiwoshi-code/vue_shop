@@ -154,9 +154,8 @@
     //验证手机号的校验规则
     const checkMobile = (rule, value, callback) => {
         const regMobile = /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/
-
         if (!value) {
-            return callback(new Error('Please input the age'))
+            return callback()
         }
         if (regMobile.test(value)) {
             return callback()
