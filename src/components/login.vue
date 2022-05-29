@@ -33,13 +33,16 @@
         ref,
         getCurrentInstance
     } from 'vue'
-    import * as api from "@/api/loginHttp.js";
+
     import {
         ElMessage
     } from 'element-plus'
     import {
         useRouter
     } from 'vue-router';
+    const {
+        proxy
+    } = getCurrentInstance()
     //定义数据
     const loginform = reactive({
         username: 'admin',
@@ -88,7 +91,7 @@
             try {
                 const {
                     data: res
-                } = await api.getLogin(loginform);
+                } = await proxy.$api.getLogin(loginform);
                 if (res.meta.status == 200) {
                     ElMessage({
                         message: res.meta.msg,

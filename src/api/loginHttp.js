@@ -39,3 +39,32 @@ export const getDeleteUser = (id) => {
     return http
         .delete(`users/${id}`)
 }
+//获取权限列表
+export const getRightsList = (parmas) => {
+    return http
+        .get(`rights/${parmas}`)
+}
+//获取角色列表
+export const getRolesList = (parmas) => {
+    return http
+        .get(`roles`)
+}
+//删除角色权限
+export const getRolesRights = (id, parmas) => {
+    return http
+        .delete(`roles/${id}/rights/${parmas}`)
+}
+//角色授权
+export const getAllotRights = (id, parmas) => {
+    return http
+        .post(`roles/${id}/rights/`, {
+            rids: parmas
+        })
+}
+//分配用户角色  
+export const getSaveRoleInfo = (id, parmas) => {
+    return http
+        .put(`users/${id}/role`, {
+            rid: parmas
+        })
+}

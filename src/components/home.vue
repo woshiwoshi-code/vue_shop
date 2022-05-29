@@ -54,14 +54,17 @@
     </div>
 </template>
 <script setup>
-    import * as api from "@/api/loginHttp.js";
     import {
         onBeforeMount,
-        reactive
+        reactive,
+        getCurrentInstance
     } from 'vue'
     import {
         ElMessage
     } from 'element-plus'
+    const {
+        proxy
+    } = getCurrentInstance()
     onBeforeMount(() => {
         getMenuList()
         data.activePath = window.sessionStorage.getItem('activePath')
@@ -87,7 +90,7 @@
         try {
             const {
                 data: res
-            } = await api.getMenuList();
+            } = await proxy.$api.getMenuList();
             if (res.meta.status == 200) {
                 data.menulist = res.data
             } else {}

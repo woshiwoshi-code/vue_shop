@@ -1,11 +1,7 @@
 <template>
     <div class=''>
         <!-- 面包屑导航 -->
-        <el-breadcrumb separator="/">
-            <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item :to="{ path: '/' }">用户管理</el-breadcrumb-item>
-            <el-breadcrumb-item :to="{ path: '/' }">用户列表</el-breadcrumb-item>
-        </el-breadcrumb>
+        <breadcrumb :breadcrumb="data.breadcrumb"></breadcrumb>
 
         <!-- 卡片视图区域 -->
         <el-card class="box-card">
@@ -61,7 +57,7 @@
                             </el-button>
                         </el-tooltip>
                         <el-tooltip class="box-item" effect="dark" content="分配角色" placement="top" :enterable="false">
-                            <el-button type="warning" size="small">
+                            <el-button type="warning" size="small" @click="setRole(scope.row)">
                                 <el-icon style="vertical-align: middle">
                                     <Setting />
                                 </el-icon>
@@ -126,21 +122,49 @@
                 </span>
             </template>
         </el-dialog>
+
+        <!-- 分配角色的对话框 -->
+        <el-dialog v-model="data.setDialogVisible" title="分配用户" width="30%" @close="setDialogClose">
+            <span>
+                <p>当前用户：{{data.setFrom.username}}</p>
+                <p>当前角色：{{data.setFrom.role_name}}</p>
+                <p>分配新角色：
+                    <el-select v-model="data.selectRoleId" class="m-2" placeholder="请选择" size="large">
+                        <el-option v-for="item in data.rolesList" :key="item.id" :label="item.roleName"
+                            :value="item.id" />
+                    </el-select>
+
+                </p>
+            </span>
+            <template #footer>
+                <span class="dialog-footer">
+                    <el-button @click="data.setDialogVisible = false">取消</el-button>
+                    <el-button type="primary" @click="saveRoleInfo">确认</el-button>
+                </span>
+            </template>
+        </el-dialog>
     </div>
 </template>
 <script setup>
-    import * as api from "@/api/loginHttp.js";
+    import breadcrumb from '../../common/Breadcrumb.vue';
     import {
         onBeforeMount,
         reactive,
-        ref
+        ref,
+        getCurrentInstance
+
     } from 'vue'
     import {
         ElMessage,
         ElMessageBox
     } from 'element-plus'
+    const {
+        proxy
+    } = getCurrentInstance()
     onBeforeMount(() => {
         getUserList()
+
+
     });
     //自定义校验规则
     //验证邮箱的校验规则
@@ -163,6 +187,20 @@
         callback(new Error('请输入合法的手机号'))
     }
     const data = reactive({
+        //面包屑数据
+        breadcrumb: [{
+                path: '/home',
+                name: '首页'
+            },
+            {
+                path: '',
+                name: '用户管理'
+            },
+            {
+                path: '',
+                name: '用户列表'
+            }
+        ],
         //数据列表
         queryInfo: {
             query: '',
@@ -232,14 +270,22 @@
         //展示修改编辑用户的对话框
         editdialogVisible: false,
         //查询到的用户信息
-        editFrom: {}
+        editFrom: {},
+        //分配用户的表单数据
+        setDialogVisible: false,
+        //查询到的用户信息
+        setFrom: {},
+        //所有角色的数据列表
+        rolesList: [],
+        //已经选中的角色的id
+        selectRoleId: ''
     })
     //获取角色数据列表
     const getUserList = async () => {
         try {
             const {
                 data: res
-            } = await api.getUserList({
+            } = await proxy.$api.getUserList({
                 params: data.queryInfo
             })
             if (res.meta.status == 200) {
@@ -266,7 +312,7 @@
         try {
             const {
                 data: res
-            } = await api.getUserStateChange(userInfo)
+            } = await proxy.$api.getUserStateChange(userInfo)
             if (res.meta.status == 200) {
                 ElMessage({
                     message: res.meta.msg,
@@ -297,7 +343,7 @@
             try {
                 const {
                     data: res
-                } = await api.getAddUser(data.addForm)
+                } = await proxy.$api.getAddUser(data.addForm)
                 if (res.meta.status == 201) {
                     ElMessage({
                         message: res.meta.msg,
@@ -319,7 +365,7 @@
         try {
             const {
                 data: res
-            } = await api.getSearchUser(id)
+            } = await proxy.$api.getSearchUser(id)
             if (res.meta.status == 200) {
                 data.editFrom = res.data
             } else {}
@@ -335,7 +381,7 @@
             try {
                 const {
                     data: res
-                } = await api.getChangeUser(data.editFrom.id, {
+                } = await proxy.$api.getChangeUser(data.editFrom.id, {
                     email: data.editFrom.email,
                     mobile: data.editFrom.mobile,
                 })
@@ -357,37 +403,6 @@
     }
     //删除角色
     const deleteDialog = async (id) => {
-        // const config = await ElMessageBox.confirm(
-        //     '此操作将永久删除该用户，确认继续吗',
-        //     '删除角色', {
-        //         confirmButtonText: '确认',
-        //         cancelButtonText: '取消',
-        //         type: 'warning',
-        //         center: true,
-        //     },
-        // ).catch(err => err)
-        // if (config !== 'confirm') {
-        //     ElMessage({
-        //         type: 'info',
-        //         message: '已取消删除',
-        //     })
-        // } else {
-        //     try {
-        //         const {
-        //             data: res
-        //         } = await api.getDeleteUser(id)
-        //         if (res.meta.status == 200) {
-        //             ElMessage({
-        //                 message: res.meta.msg,
-        //                 type: "success",
-        //             });
-        //             getUserList()
-        //         } else {}
-        //     } catch (error) {
-        //         console.log("-----error:", error);
-        //     }
-        // }
-
         ElMessageBox.confirm(
                 '此操作将永久删除该用户，确认继续吗?',
                 '删除角色', {
@@ -401,7 +416,7 @@
                 try {
                     const {
                         data: res
-                    } = await api.getDeleteUser(id)
+                    } = await proxy.$api.getDeleteUser(id)
                     if (res.meta.status == 200) {
                         ElMessage({
                             message: res.meta.msg,
@@ -420,6 +435,61 @@
                     message: '已取消删除',
                 })
             })
+    }
+    //分配角色
+    const setRole = async (userInfo) => {
+        data.setDialogVisible = true
+        data.setFrom = userInfo
+        try {
+            const {
+                data: res
+            } = await proxy.$api.getRolesList()
+            if (res.meta.status == 200) {
+                data.rolesList = res.data
+            } else {
+                ElMessage({
+                    message: res.meta.msg,
+                    type: "error",
+                });
+            }
+        } catch (error) {
+            console.log("-----error:", error);
+        }
+
+    }
+    //点击按钮,分配角色
+    const saveRoleInfo = async () => {
+        if (!data.selectRoleId) {
+            return ElMessage({
+                message: "请选择要分配的角色",
+                type: "error",
+            });
+        }
+        try {
+            const {
+                data: res
+            } = await proxy.$api.getSaveRoleInfo(data.setFrom.id, data.selectRoleId)
+            if (res.meta.status == 200) {
+                ElMessage({
+                    message: res.meta.msg,
+                    type: "success",
+                });
+                data.setDialogVisible = false
+                getUserList()
+            } else {
+                ElMessage({
+                    message: res.meta.msg,
+                    type: "error",
+                });
+            }
+        } catch (error) {
+            console.log("-----error:", error);
+        }
+    }
+    //监听分配角色对话框关闭事件
+    const setDialogClose = () => {
+        data.selectRoleId = ''
+        data.setFrom = {}
     }
 </script>
 <style lang='scss' scoped>
