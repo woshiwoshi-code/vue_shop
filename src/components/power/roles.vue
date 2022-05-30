@@ -11,7 +11,7 @@
                 </el-col>
             </el-row>
             <!-- 角色列表 -->
-            <el-table row-key="'id" :data="data.rolesList" stripe border style="width: 100%" highlight-current-row>
+            <el-table row-key="id" :data="data.rolesList" stripe border style="width: 100%" highlight-current-row>
                 <el-table-column type="expand">
                     <template v-slot="scope">
                         <el-row :class="['bdbottom',index === 0 ? 'bdtop' :'', 'vcenter','ccenter']"
@@ -90,6 +90,8 @@
     </div>
 </template>
 <script setup>
+    import * as api from "@/api/rolesHttp.js";
+    import * as apis from "@/api/userHttp.js";
     import breadcrumb from '../../common/Breadcrumb.vue';
     import {
         onBeforeMount,
@@ -144,7 +146,7 @@
         try {
             const {
                 data: res
-            } = await proxy.$api.getRolesList()
+            } = await apis.getRolesList()
             if (res.meta.status == 200) {
                 data.rolesList = res.data
 
@@ -168,7 +170,7 @@
                 try {
                     const {
                         data: res
-                    } = await proxy.$api.getRolesRights(role.id, rightid)
+                    } = await api.getRolesRights(role.id, rightid)
                     if (res.meta.status == 200) {
                         ElMessage({
                             message: res.meta.msg,
@@ -185,8 +187,6 @@
                     type: 'info',
                     message: '已取消删除该权限',
                 })
-                console.log(res);
-
             })
     }
     //展示分配权限的弹框
@@ -196,7 +196,7 @@
         try {
             const {
                 data: res
-            } = await proxy.$api.getRightsList('tree')
+            } = await api.getRightsList('tree')
             if (res.meta.status == 200) {
                 data.rightsList = res.data
                 // 递归获取到的三级节点
@@ -233,7 +233,7 @@
         try {
             const {
                 data: res
-            } = await proxy.$api.getAllotRights(data.roleId, idStr)
+            } = await api.getAllotRights(data.roleId, idStr)
             if (res.meta.status == 200) {
                 ElMessage({
                     message: res.meta.msg,
@@ -246,9 +246,6 @@
         } catch (error) {
             console.log("-----error:", error);
         }
-        console.log(data.roleId);
-
-
     }
 </script>
 <style lang='scss' scoped>

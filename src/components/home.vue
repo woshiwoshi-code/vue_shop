@@ -54,6 +54,7 @@
     </div>
 </template>
 <script setup>
+    import * as api from "@/api/homeHttp.js";
     import {
         onBeforeMount,
         reactive,
@@ -90,7 +91,7 @@
         try {
             const {
                 data: res
-            } = await proxy.$api.getMenuList();
+            } = await api.getMenuList();
             if (res.meta.status == 200) {
                 data.menulist = res.data
             } else {}

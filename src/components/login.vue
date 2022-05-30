@@ -24,6 +24,7 @@
     </div>
 </template>
 <script setup>
+    import * as api from "@/api/loginHttp.js";
     import {
         UserFilled,
         Unlock
@@ -91,7 +92,7 @@
             try {
                 const {
                     data: res
-                } = await proxy.$api.getLogin(loginform);
+                } = await api.getLogin(loginform);
                 if (res.meta.status == 200) {
                     ElMessage({
                         message: res.meta.msg,

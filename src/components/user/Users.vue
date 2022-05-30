@@ -40,27 +40,27 @@
                             @change="userStateChange(scope.row)" />
                     </template>
                 </el-table-column>
-                <el-table-column prop="" label="操作" width="190">
+                <el-table-column prop="" label="操作" width="250">
                     <template v-slot="scope">
                         <el-tooltip class="box-item" effect="dark" content="修改角色" placement="top" :enterable="false">
                             <el-button type="primary" size="small" @click="showEditDialog(scope.row.id)">
                                 <el-icon style="vertical-align: middle">
                                     <Edit />
-                                </el-icon>
+                                </el-icon>编辑
                             </el-button>
                         </el-tooltip>
                         <el-tooltip class="box-item" effect="dark" content="删除角色" placement="top" :enterable="false">
                             <el-button type="danger" size="small" @click="deleteDialog(scope.row.id)">
                                 <el-icon style="vertical-align: middle">
                                     <Delete />
-                                </el-icon>
+                                </el-icon>删除
                             </el-button>
                         </el-tooltip>
                         <el-tooltip class="box-item" effect="dark" content="分配角色" placement="top" :enterable="false">
                             <el-button type="warning" size="small" @click="setRole(scope.row)">
                                 <el-icon style="vertical-align: middle">
                                     <Setting />
-                                </el-icon>
+                                </el-icon>分配角色
                             </el-button>
                         </el-tooltip>
 
@@ -147,6 +147,7 @@
     </div>
 </template>
 <script setup>
+    import * as api from "@/api/userHttp.js";
     import breadcrumb from '../../common/Breadcrumb.vue';
     import {
         onBeforeMount,
@@ -286,7 +287,7 @@
         try {
             const {
                 data: res
-            } = await proxy.$api.getUserList({
+            } = await api.getUserList({
                 params: data.queryInfo
             })
             if (res.meta.status == 200) {
@@ -313,7 +314,7 @@
         try {
             const {
                 data: res
-            } = await proxy.$api.getUserStateChange(userInfo)
+            } = await api.getUserStateChange(userInfo)
             if (res.meta.status == 200) {
                 ElMessage({
                     message: res.meta.msg,
@@ -344,7 +345,7 @@
             try {
                 const {
                     data: res
-                } = await proxy.$api.getAddUser(data.addForm)
+                } = await api.getAddUser(data.addForm)
                 if (res.meta.status == 201) {
                     ElMessage({
                         message: res.meta.msg,
@@ -366,7 +367,7 @@
         try {
             const {
                 data: res
-            } = await proxy.$api.getSearchUser(id)
+            } = await api.getSearchUser(id)
             if (res.meta.status == 200) {
                 data.editFrom = res.data
             } else {}
@@ -382,7 +383,7 @@
             try {
                 const {
                     data: res
-                } = await proxy.$api.getChangeUser(data.editFrom.id, {
+                } = await api.getChangeUser(data.editFrom.id, {
                     email: data.editFrom.email,
                     mobile: data.editFrom.mobile,
                 })
@@ -417,14 +418,13 @@
                 try {
                     const {
                         data: res
-                    } = await proxy.$api.getDeleteUser(id)
+                    } = await api.getDeleteUser(id)
                     if (res.meta.status == 200) {
                         ElMessage({
                             message: res.meta.msg,
                             type: "success",
                         });
                         getUserList()
-                        console.log(res);
                     } else {}
                 } catch (error) {
                     console.log("-----error:", error);
@@ -444,7 +444,7 @@
         try {
             const {
                 data: res
-            } = await proxy.$api.getRolesList()
+            } = await api.getRolesList()
             if (res.meta.status == 200) {
                 data.rolesList = res.data
             } else {
@@ -469,7 +469,7 @@
         try {
             const {
                 data: res
-            } = await proxy.$api.getSaveRoleInfo(data.setFrom.id, data.selectRoleId)
+            } = await api.getSaveRoleInfo(data.setFrom.id, data.selectRoleId)
             if (res.meta.status == 200) {
                 ElMessage({
                     message: res.meta.msg,

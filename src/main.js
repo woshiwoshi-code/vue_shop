@@ -19,10 +19,6 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 // 全局样式表
 import './assets/css/global.css';
-//获取网络请求
-import * as api from "@/api/loginHttp.js";
-app.config.globalProperties.$api = api;
-
 
 
 app.use(store)

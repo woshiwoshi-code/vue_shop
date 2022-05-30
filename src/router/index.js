@@ -17,22 +17,28 @@ const routes = [{
     redirect: "welcome",
     component: () => import('../components/home.vue'),
     children: [{
-      path: '/welcome',
-      name: 'welcome',
-      component: () => import('../components/welcome.vue')
-    }, {
-      path: '/users',
-      name: 'users',
-      component: () => import('../components/user/Users.vue')
-    }, {
-      path: '/rights',
-      name: 'rights',
-      component: () => import('../components/power/rights.vue')
-    }, {
-      path: '/roles',
-      name: 'roles',
-      component: () => import('../components/power/roles.vue')
-    }]
+        path: '/welcome',
+        name: 'welcome',
+        component: () => import('../components/welcome.vue')
+      }, {
+        path: '/users',
+        name: 'users',
+        component: () => import('../components/user/Users.vue')
+      }, {
+        path: '/rights',
+        name: 'rights',
+        component: () => import('../components/power/rights.vue')
+      }, {
+        path: '/roles',
+        name: 'roles',
+        component: () => import('../components/power/roles.vue')
+      },
+      {
+        path: '/categories',
+        name: 'categories',
+        component: () => import('../components/goods/cate.vue')
+      }
+    ]
   }
 ]
 

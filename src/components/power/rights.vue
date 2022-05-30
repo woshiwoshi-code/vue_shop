@@ -13,7 +13,7 @@
                     <template v-slot="scope">
                         <el-tag v-if="scope.row.level==='0'">一级</el-tag>
                         <el-tag v-else-if="scope.row.level==='1'" type="success">二级</el-tag>
-                        <el-tag v-else-if="scope.row.level==='2'" type="danger">三级</el-tag>
+                        <el-tag v-else="scope.row.level==='2'" type="danger">三级</el-tag>
                     </template>
                 </el-table-column>
             </el-table>
@@ -21,6 +21,8 @@
     </div>
 </template>
 <script setup>
+    import * as api from "@/api/rolesHttp.js";
+
     import breadcrumb from '../../common/Breadcrumb.vue';
     import {
         onBeforeMount,
@@ -57,7 +59,7 @@
         try {
             const {
                 data: res
-            } = await proxy.$api.getRightsList('list')
+            } = await api.getRightsList('list')
             if (res.meta.status == 200) {
                 data.rightsList = res.data
             } else {}
