@@ -7,7 +7,7 @@
         <el-card>
             <el-row>
                 <el-col>
-                    <el-button type="primary" size="large">添加分类</el-button>
+                    <el-button type="primary" size="large" @click="showAddCateDialog">添加分类</el-button>
                 </el-col>
             </el-row>
 
@@ -35,9 +35,10 @@
                 </el-table-column>
                 <el-table-column label="排序" sortable>
                     <template v-slot="scope">
-                        <el-tag size="'mini" v-if="scope.row.cat_level===0">一级</el-tag>
-                        <el-tag class="ml-2" type="success" size="'mini" v-else-if="scope.row.cat_level===1">二级</el-tag>
-                        <el-tag class="ml-2" type="danger" size="'mini" v-else>三级</el-tag>
+                        <el-tag size="small" v-if="scope.row.cat_level===0">一级</el-tag>
+                        <el-tag class="ml-2" type="success" size="small" v-else-if="scope.row.cat_level===1">二级
+                        </el-tag>
+                        <el-tag class="ml-2" type="danger" size="small" v-else>三级</el-tag>
                     </template>
 
                 </el-table-column>
@@ -64,6 +65,32 @@
                 :page-sizes="[3, 5, 10, 15]" layout="total, sizes, prev, pager, next, jumper" :total="data.total"
                 @size-change="handleSizeChange" @current-change="handleCurrentChange" small />
         </el-card>
+
+
+        <!-- 添加分类的对话框 -->
+        <el-dialog v-model="data.addCateDialogVisible" title="添加分类" width="30%">
+            <span>
+                <el-form ref="addCateFormRef" :model="data.addCateForm" :rules="data.addCaterules">
+                    <el-form-item label="分类名称：" prop="cat_name">
+                        <el-input v-model="data.addCateForm.cat_name" />
+                    </el-form-item>
+                    <el-form-item label="父级分类：">
+                        <!-- props用来指定配置对象 -->
+                        <el-cascader v-model="data.selectedKeys" :options="data.parentCateList"
+                            :props="data.cascaderProps" @change="parentCateChanged" clearable />
+
+                    </el-form-item>
+
+                </el-form>
+
+            </span>
+            <template #footer>
+                <span class="dialog-footer">
+                    <el-button @click="data.addCateDialogVisible = false">取消</el-button>
+                    <el-button type="primary" @click="data.addCateDialogVisible = false">确认</el-button>
+                </span>
+            </template>
+        </el-dialog>
     </div>
 </template>
 <script setup>
@@ -106,6 +133,33 @@
         },
         //总页数
         total: 0,
+        //控制添加分类对话框的显示
+        addCateDialogVisible: false,
+        //添加分类的表单数据对象
+        addCateForm: {
+            cat_name: '',
+            cat_pid: 0,
+            cat_level: 0,
+        },
+        //添加分类的表单验证规则
+        addCaterules: {
+            cat_name: [{
+                required: true,
+                message: '请输入分类名称',
+                trigger: 'blur'
+            }]
+        },
+        // 父级分类的列表
+        parentCateList: [],
+        //指定级联选择器的配置对象
+        cascaderProps: {
+            expandTrigger: 'hover',
+            value: 'cat_id',
+            label: 'cat_name',
+            children: 'children'
+        },
+        selectedKeys: [],
+
     });
     onBeforeMount(() => {
         getCateList()
@@ -122,7 +176,6 @@
                 for (let i = 0; i < data.cateList.length; i++) {
                     data.cateList[i].index = i + 1;
                 }
-                console.log(data.cateList);
             } else {}
         } catch (error) {
             console.log("-----error:", error);
@@ -138,6 +191,36 @@
         data.queryInfo.pagenum = NewPage
         getCateList()
     }
+    //对话框的显示
+    const showAddCateDialog = () => {
+        getParentCateList()
+        data.addCateDialogVisible = true
+    }
+    //获取父级分类的数据列表
+    const getParentCateList = async () => {
+        try {
+            const {
+                data: res
+            } = await api.getCategories({
+                type: 2
+            })
+            if (res.meta.status == 200) {
+                data.parentCateList = res.data
+                console.log(data.parentCateList);
+            } else {}
+        } catch (error) {
+            console.log("-----error:", error);
+        }
+    }
+    //监听父级分类的变化
+    const parentCateChanged = () => {
+        // data.addCateForm.cat_pid = NewValue[NewValue.length - 1]
+        // data.addCateForm.cat_level = NewValue.length
+        console.log(data.selectedKeys);
+    }
 </script>
 <style lang='scss' scoped>
+    .el-cascader {
+        width: 100%;
+    }
 </style>
