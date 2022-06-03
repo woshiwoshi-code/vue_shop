@@ -158,6 +158,7 @@
             label: 'cat_name',
             children: 'children'
         },
+        //级联选择框双向绑定的数据
         selectedKeys: [],
 
     });
