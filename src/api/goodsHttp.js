@@ -6,3 +6,8 @@ export const getCategories = (data) => {
             params: data
         })
 }
+//添加分类
+export const getAddCategories = (data) => {
+    return http
+        .post("categories", data)
+}

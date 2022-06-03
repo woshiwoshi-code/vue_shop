@@ -68,7 +68,7 @@
 
 
         <!-- 添加分类的对话框 -->
-        <el-dialog v-model="data.addCateDialogVisible" title="添加分类" width="30%">
+        <el-dialog v-model="data.addCateDialogVisible" title="添加分类" width="30%" @close="addCateDialogClose">
             <span>
                 <el-form ref="addCateFormRef" :model="data.addCateForm" :rules="data.addCaterules">
                     <el-form-item label="分类名称：" prop="cat_name">
@@ -87,7 +87,7 @@
             <template #footer>
                 <span class="dialog-footer">
                     <el-button @click="data.addCateDialogVisible = false">取消</el-button>
-                    <el-button type="primary" @click="data.addCateDialogVisible = false">确认</el-button>
+                    <el-button type="primary" @click="addCate">确认</el-button>
                 </span>
             </template>
         </el-dialog>
@@ -206,7 +206,7 @@
             })
             if (res.meta.status == 200) {
                 data.parentCateList = res.data
-                console.log(data.parentCateList);
+
             } else {}
         } catch (error) {
             console.log("-----error:", error);
@@ -214,12 +214,43 @@
     }
     //监听父级分类的变化
     const parentCateChanged = () => {
-        // data.addCateForm.cat_pid = NewValue[NewValue.length - 1]
-        // data.addCateForm.cat_level = NewValue.length
-        console.log(data.selectedKeys);
+        if (data.selectedKeys && data.selectedKeys.length > 0) {
+            data.addCateForm.cat_pid = data.selectedKeys[data.selectedKeys.length - 1]
+            data.addCateForm.cat_level = data.selectedKeys.length
+            return
+        } else {
+            data.addCateForm.cat_pid = 0
+            data.addCateForm.cat_level = 0
+        }
+
+
+    }
+    //点击按钮添加新的分类
+    const addCate = async () => {
+        try {
+            const {
+                data: res
+            } = await api.getAddCategories(data.addCateForm)
+            if (res.meta.status == 201) {
+                data.addCateDialogVisible = false
+                getCateList()
+                ElMessage.success('添加成功')
+            } else {
+                ElMessage.error(res.meta.msg)
+            }
+        } catch (error) {
+            console.log("-----error:", error);
+        }
+    }
+    //关闭对话框重置表单数据
+    const addCateDialogClose = () => {
+        proxy.$refs.addCateFormRef.resetFields()
+        data.selectedKeys = []
+        data.addCateForm.cat_pid = 0
+        data.addCateForm.cat_level = 0
     }
 </script>
-<style lang='scss' scoped>
+<style lang='scss'>
     .el-cascader {
         width: 100%;
     }
