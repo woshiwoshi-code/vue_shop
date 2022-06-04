@@ -28,3 +28,32 @@ export const getAddParams = (id, params, data) => {
             attr_sel: data
         })
 }
+// 根据 ID 查询参数
+export const getEditParmas = (id, params, data) => {
+    return http
+        .get(`categories/${id}/attributes/${params}`, {
+            attr_sel: data
+        })
+}
+//编辑提交参数
+export const getPutEditParmas = (id, params, name, data) => {
+    return http
+        .put(`categories/${id}/attributes/${params}`, {
+            attr_name: name,
+            attr_sel: data
+        })
+}
+// 删除参数
+export const getDeleteParmas = (id, params) => {
+    return http
+        .delete(`categories/${id}/attributes/${params}`)
+}
+//编辑提交参数
+export const getEdit = (id, params, name, data, val) => {
+    return http
+        .put(`categories/${id}/attributes/${params}`, {
+            attr_name: name,
+            attr_sel: data,
+            attr_vals: val
+        })
+}
