@@ -19,7 +19,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 // 全局样式表
 import './assets/css/global.css';
-
+//富文本
 import Vue3Tinymce from '@jsdawn/vue3-tinymce'
 
 app.use(store)
