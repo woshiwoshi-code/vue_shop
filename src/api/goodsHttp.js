@@ -57,3 +57,22 @@ export const getEdit = (id, params, name, data, val) => {
             attr_vals: val
         })
 }
+//--------------------------------------------------------------------------------------------------------------
+// 商品管理
+//商品列表数据
+export const getGoodsList = (params) => {
+    return http
+        .get(`goods`, {
+            params: params
+        })
+}
+//删除商品
+export const getRemoveGoods = (id) => {
+    return http
+        .delete(`goods/${id}`, )
+}
+//添加商品
+export const getGoods = (from) => {
+    return http
+        .post(`goods`, from)
+}

@@ -20,9 +20,11 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 // 全局样式表
 import './assets/css/global.css';
 
+import Vue3Tinymce from '@jsdawn/vue3-tinymce'
 
 app.use(store)
 app.use(router)
+app.use(Vue3Tinymce)
 app.use(ElementPlus, {
     size: 'small',
     zIndex: 3000
