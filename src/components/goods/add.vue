@@ -274,7 +274,7 @@
     const add = () => {
         proxy.$refs.ruleFormRef.validate(async valid => {
             if (!valid) {
-                return ElMessage({
+                ElMessage({
                     message: '请填写完整信息',
                     type: 'warning'
                 })
@@ -302,7 +302,7 @@
 
             })
 
-            console.log(from);
+            // console.log(from);
             //添加商品的请求
             try {
                 const {
@@ -310,11 +310,16 @@
                 } = await api.getGoods(from)
                 if (res.meta.status == 201) {
                     ElMessage({
-                        message: '添加成功',
+                        message: res.meta.msg,
                         type: 'success'
                     })
-                    proxy.$router.push('/goods')
-                    console.log(res);
+                    const {
+                        $router
+                    } = proxy
+                    $router.push({
+                        path: '/goods'
+                    })
+                    console.log(1);
                 } else {}
             } catch (error) {
                 console.log("-----error:", error);
