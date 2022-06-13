@@ -177,7 +177,7 @@
             $router
         } = proxy
         $router.push({
-            path: '/goods/add'
+            path: '/add'
         })
     }
 </script>
